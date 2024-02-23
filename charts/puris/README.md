@@ -1,6 +1,6 @@
 # puris
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: main](https://img.shields.io/badge/AppVersion-main-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: main](https://img.shields.io/badge/AppVersion-main-informational?style=flat-square)
 
 A helm chart for Kubernetes deployment of PURIS
 
@@ -33,6 +33,7 @@ $ helm install puris --namespace puris --create-namespace .
 | backend.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchExpressions | list | `[{"key":"app.kubernetes.io/name","operator":"DoesNotExist"}]` | Matching Expressions as key and operators for the pod affinity |
 | backend.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` | Topology key of the Kubernetes cluster |
 | backend.autoscaling.enabled | bool | `false` | Enable or disable the autoscaling of pods |
+| backend.env | object | `{}` | Extra environment variables that will be passed onto the backend deployment pods |
 | backend.fullnameOverride | string | `"backend"` | Possibility to override the fullname |
 | backend.image.pullPolicy | string | `"Always"` | THe policy for the image pull process |
 | backend.image.repository | string | `"tractusx/app-puris-backend"` | Repository of the docker image |
@@ -56,19 +57,18 @@ $ helm install puris --namespace puris --create-namespace .
 | backend.nodeSelector | object | `{}` | Constrains for the node selector |
 | backend.podAnnotations | object | `{}` | Annotations added to a running pod |
 | backend.podSecurityContext | object | `{}` | Added security contexts for a pod |
-| backend.puris.api.key | string | `"test"` | The API key of the PURIS application |
+| backend.puris.api.key | string | `"test"` | The API key of the PURIS application. Secret-key 'puris-api-key'. |
 | backend.puris.api.rootDir | string | `"/catena"` | The root directory of the API |
 | backend.puris.datasource.driverClassName | string | `"org.postgresql.Driver"` | Driver class name of the database |
-| backend.puris.datasource.password | string | `nil` | Password for the database user. Ignored if postgres.enabled is true. |
+| backend.puris.datasource.password | string | `nil` | Password for the database user. Ignored if postgres.enabled is true. Secret-key 'puris-datasource-password'. |
 | backend.puris.datasource.url | string | `"jdbc:postgresql://postgresql-name:5432/puris-database"` | URL of the database. Ignored if postgres.enabled is true. |
 | backend.puris.datasource.username | string | `"db-user"` | Username of the database. Ignored if postgres.enabled is true. |
 | backend.puris.demonstrator.role | string | `nil` | Current role of the PURIS demonstrator. Default value should be empty. Can be set to "customer" or "supplier" to enable demonstration setup |
 | backend.puris.dtr.url | string | `"http://localhost:4243"` | Endpoint for DTR |
 | backend.puris.edc.controlplane.host | string | `"172.17.0.2"` |  |
-| backend.puris.edc.controlplane.key | string | `"password"` | Key for the EDC control plane |
+| backend.puris.edc.controlplane.key | string | `"password"` | Key for the EDC control plane. Secret-key 'puris-edc-controlplane-key' |
 | backend.puris.edc.controlplane.management.url | string | `"https:/your-edc-address:8181/management"` | Url to the EDC controlplane management of the edc |
 | backend.puris.edc.controlplane.protocol.url | string | `"https://your-edc-address:8184/api/v1/dsp"` | Url to the EDC controlplane protocol API of the edc |
-| backend.puris.edc.web.rest.cors.enabled | bool | `true` |  |
 | backend.puris.edr.deletiontimer | int | `2` | Number of minutes before received authentication data of a consumer pull is removed from memory |
 | backend.puris.edr.endpoint | string | `"your-backend-host-address.com"` | Endpoint for EDR |
 | backend.puris.frameworkagreement.credential | string | `"FrameworkAgreement.traceability"` | The name of the framework agreement |
@@ -79,7 +79,7 @@ $ helm install puris --namespace puris --create-namespace .
 | backend.puris.own.bpnl | string | `"BPNL4444444444XX"` | Own BPNL of the EDC |
 | backend.puris.own.bpns | string | `"BPNS4444444444XX"` | Own BPNS of the EDC |
 | backend.puris.own.country | string | `"Germany"` | Own country |
-| backend.puris.own.name | string | `"YOUR-APPLICATION-NAME"` | Own name (self-description) |
+| backend.puris.own.name | string | `"YOUR-COMPANY-NAME"` | Own name (self-description) |
 | backend.puris.own.site.name | string | `"puris-test"` | Own site name |
 | backend.puris.own.streetnumber | string | `"Musterstraße 110A"` | Own street and number |
 | backend.puris.own.zipcodeandcity | string | `"12345 Musterhausen"` | Own zipcode and city |
@@ -87,6 +87,7 @@ $ helm install puris --namespace puris --create-namespace .
 | backend.puris.request.serverendpoint | string | `"your-backend-host-address.com"` | Endpoint of server for request |
 | backend.puris.response.apiassetid | string | `"response-api-asset"` | Asset ID for response API |
 | backend.puris.response.serverendpoint | string | `"your-backend-host-address.com"` | Endpoint of server for response |
+| backend.puris.secret | string | `"secret-backend-puris"` | Secret for backend passwords. For more information look into 'backend-secrets.yaml' file. |
 | backend.puris.statusrequest.apiassetid | string | `"statusrequest-api-asset"` | Asset ID for status-request API |
 | backend.puris.statusrequest.serverendpoint | string | `"your-backend-host-address.com"` | Endpoint of server for statusrequest |
 | backend.readinessProbe | object | `{"failureThreshold":3,"initialDelaySeconds":250,"periodSeconds":25,"successThreshold":1,"timeoutSeconds":1}` | Checks if the pod is fully ready to operate |
@@ -116,6 +117,7 @@ $ helm install puris --namespace puris --create-namespace .
 | frontend.autoscaling.maxReplicas | int | `100` | Number of maximum replica pods for autoscaling |
 | frontend.autoscaling.minReplicas | int | `1` | Number of minimum replica pods for autoscaling |
 | frontend.autoscaling.targetCPUUtilizationPercentage | int | `80` | Value of CPU usage in percentage for autoscaling decisions |
+| frontend.env | object | `{}` | Extra environment variables that will be passed onto the frontend deployment pods |
 | frontend.fullnameOverride | string | `"frontend"` | Possibility to override the fullname |
 | frontend.image.pullPolicy | string | `"Always"` | THe policy for the image pull process |
 | frontend.image.repository | string | `"tractusx/app-puris-frontend"` | Repository of the docker image |
@@ -179,11 +181,12 @@ $ helm install puris --namespace puris --create-namespace .
 | frontend.tolerations | list | `[]` | Constrains for tolerations |
 | global.domain.backend.ingress | string | `"your-backend-host-address.com"` |  |
 | postgresql.auth.database | string | `"postgres"` | Name of the database. |
-| postgresql.auth.password | string | `"password"` | Password for the database. |
+| postgresql.auth.existingSecret | string | `"secret-postgres-init"` | Secret containing the password. For more information look into 'backend-secrets-postgres.yaml' file. |
+| postgresql.auth.password | string | `"password"` | Password for the database. Secret-key 'postgres-password'. |
 | postgresql.auth.username | string | `"puris"` | Username for the database. |
 | postgresql.enabled | bool | `true` | Enable postgres by default, set to false to use existing postgres. Make sure to set backend.puris.jpa.hibernate.ddl-auto accordingly (by default database is created using hibernate ddl from backend). |
 | postgresql.fullnameOverride | string | `"backend-postgresql"` | Possibility to override the fullname |
 | postgresql.service.ports.postgresql | int | `5432` | Port of postgres database. |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.12.0](https://github.com/norwoodj/helm-docs/releases/v1.12.0)
+Autogenerated from chart metadata using [helm-docs v1.11.2](https://github.com/norwoodj/helm-docs/releases/v1.11.2)

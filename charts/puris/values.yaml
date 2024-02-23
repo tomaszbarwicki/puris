@@ -214,6 +214,10 @@ frontend:
       # -- Allowed rates per second for nginx rate limiting.
       rate: 10r/s
 
+  # -- Extra environment variables that will be passed onto the frontend deployment pods
+  env: {}
+  #  ENV_NAME: value
+
 
 # BACKEND -----------
 backend:
@@ -360,6 +364,8 @@ backend:
     timeoutSeconds: 1
 
   puris:
+    # -- Secret for backend passwords. For more information look into 'backend-secrets.yaml' file.
+    existingSecret: "secret-backend-puris"
     api:
       # -- The API key of the PURIS application
       key: "test"
@@ -385,10 +391,6 @@ backend:
           url: "https://your-edc-address:8184/api/v1/dsp"
         # -- Key for the EDC control plane
         key: "password"
-      web:
-        rest:
-          cors:
-            enabled: true
     own:
       # -- Own BPNL of the EDC
       bpnl: BPNL4444444444XX
@@ -400,13 +402,13 @@ backend:
       country: "Germany"
       site:
         # -- Own site name
-        name: "puris-test"
+        name: "YOUR-SITE-NAME"
       # -- Own street and number
       streetnumber: "Musterstraße 110A"
       # -- Own zipcode and city
       zipcodeandcity: "12345 Musterhausen"
       # -- Own name (self-description)
-      name: "YOUR-APPLICATION-NAME"
+      name: "YOUR-COMPANY-NAME"
     demonstrator:
       # -- Current role of the PURIS demonstrator. Default value should be empty.
       # Can be set to "customer" or "supplier" to enable demonstration setup
@@ -448,6 +450,10 @@ backend:
       # --Endpoint for DTR
       url: http://localhost:4243
 
+  # -- Extra environment variables that will be passed onto the backend deployment pods
+  env: {}
+  #  ENV_NAME: value
+
 postgresql:
   # -- Enable postgres by default, set to false to use existing postgres. Make sure to set
   # backend.puris.jpa.hibernate.ddl-auto accordingly (by default database is created using hibernate ddl from
@@ -462,7 +468,11 @@ postgresql:
   auth:
     # -- Name of the database.
     database: "postgres"
-    # -- Username for the database.
+    # -- Secret containing the password. For more information look into 'backend-secrets-postgres.yaml' file.
+    existingSecret: "secret-postgres-init"
+    # -- Username for the root user and for the database.
     username: "puris"
-    # -- Password for the database.
-    password: "password"
+    # -- Password for the root user. Secret-key 'password'
+    password: ""
+    # -- Password for the database. Secret-key 'postgres-password'.
+    passwordPostgres: "password"
