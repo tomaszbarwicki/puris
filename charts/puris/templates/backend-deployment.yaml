@@ -49,12 +49,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.postgresql.auth.existingSecret }}"
-                  key: "postgres-password"
+                  key: "password"
             - name: ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.postgresql.auth.existingSecret }}"
-                  key: "password"
+                  key: "postgres-password"
             {{- else }}
             - name: DATASOURCE_URL
               value: "{{ .Values.backend.puris.datasource.url }}"
